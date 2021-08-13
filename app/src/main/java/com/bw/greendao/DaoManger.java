@@ -28,7 +28,6 @@ class DaoManger {
         //new一个Dao控制 传值读写库对象
         DaoMaster daoMaster = new DaoMaster(db);
         //获取增删改查库对象
-
         daoSession = daoMaster.newSession();
     }
 

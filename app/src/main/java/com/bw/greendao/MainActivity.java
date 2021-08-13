@@ -1,28 +1,28 @@
 package com.bw.greendao;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.bw.greendao.db.DaoMaster;
 import com.bw.greendao.db.DaoSession;
+import com.bw.greendao.db.StudentDao;
 import com.bw.greendao.db.UserDao;
-
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "MainActivity";
+
     private UserDao userDao;
+    private StudentDao studentDao;
     private Button add;
     private Button del;
     private Button upData;
     private Button query;
+
+    private int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initUserDao() {
-        App application = (App) getApplication();
-        DaoSession daoSession = application.getDaoSession();
+        DaoSession daoSession = DaoManger.getInstance().getDaoSession();
         //获取指定增删改查库对象
         userDao = daoSession.getUserDao();
+        studentDao = daoSession.getStudentDao();
     }
 
 
@@ -81,12 +81,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 userDao.update(user2);
                 break;
             case R.id.query:
+
+//                //查询所有
                 List<User> users = userDao.loadAll();
-                Toast.makeText(this, users.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, users.toString(), Toast.LENGTH_SHORT).show();
+//
+//                //分页查询
+//                List<User> list = userDao.queryBuilder().offset(i*20).limit(20).list();
+//                i++;
+//
+//                //唯一查询
+//                User unique = userDao.queryBuilder().where(UserDao.Properties.Id.eq(1)).unique();
+//                Toast.makeText(this, unique.toString(), Toast.LENGTH_SHORT).show();
+//
+//                //多个查询
+//                List<User> list1 = userDao.queryBuilder().where(UserDao.Properties.Username.eq("666666")).list();
+//                for (User user1 : list1) {
+//                    Log.i(TAG, user1.toString());
+//                }
 
-                //分页查询
-                List<User> list = userDao.queryBuilder().offset(20).limit(20).list();
-
+                //模糊查询
+                List<User> list2 = userDao.queryBuilder().where(UserDao.Properties.Username.like("6")).list();
+                for (User user1 : list2) {
+                    Log.i(TAG, user1.toString());
+                }
                 break;
         }
     }
